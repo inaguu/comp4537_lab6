@@ -1,3 +1,7 @@
+const query_check = "SELECT word FROM dictionary WHERE word = "
+
+
+
 const http = require('http')
 const url = require("url")
 const mysql = require("mysql")
@@ -11,6 +15,18 @@ const con = mysql.createPool ({
     password: "suc2&%7*a%D4brU",
     database: "freedb_comp3920NodeJS"
 })
+
+function wordCheck(word) {
+    let query = query_check + word
+    con.query(query, (err, result) => {
+        if (err) {
+            res.writeHead(400, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
+            res.end("You got an SQL error, please check your SQL query")
+        }
+    })
+}
+
+
 
 
 http.createServer((req, res) => {
@@ -36,6 +52,16 @@ http.createServer((req, res) => {
 
         req.on("end", () => {
             let data = JSON.parse(body)
+            
+            let word = data.word
+            let definition = data.definition
+            let word_lang = data.word_language
+            let definition_lang = data.definition_language
+
+            
+
+
+
             con.query(data.query, (err, result) => {
                 if (err) {
                     res.writeHead(400, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
