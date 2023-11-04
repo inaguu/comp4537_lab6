@@ -23,6 +23,7 @@ function wordCheck(word) {
             res.writeHead(400, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
             res.end("You got an SQL error, please check your SQL query")
         }
+        console.log(result)
     })
 }
 
@@ -58,9 +59,11 @@ http.createServer((req, res) => {
             let word_lang = data.word_language
             let definition_lang = data.definition_language
 
-            
+            if (wordCheck(word)) {
+ 
+            } else {
 
-
+            }
 
             con.query(data.query, (err, result) => {
                 if (err) {
@@ -72,44 +75,6 @@ http.createServer((req, res) => {
                 res.end("We got your POST request")
             })
         })
-        
-        
-    } else if (req.method === "POST" && pathname == "/lab5/insert") {
-        let body = ""
-        
-        req.on('data', function(chunk) {
-            if (chunk != null) {
-                body += chunk
-            }
-        })
-
-        req.on("end", () => {
-            let data = JSON.parse(body)
-            con.query(data.query, (err, result) => {
-                if (err) {
-                    res.writeHead(400, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
-                    res.end("You got an SQL error, please check your SQL query")
-                }
-                console.log(result)
-                res.writeHead(200, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
-                res.end("We got your POST request")
-            })
-        })
-
-    }  else if (req.method === "GET" && pathname.includes("/lab5/select")) {
-        let sql = pathname.substring(pathname.lastIndexOf('/') + 1)
-        let clean_sql = sql.replace(/%20/g, " ")
-
-        con.query(clean_sql, (err, result) => {
-            if (err) {
-                res.writeHead(400, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
-                res.end("You got an SQL error, please check your SQL query")
-            }
-            console.log(result)
-            res.writeHead(200, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})            
-            res.end(JSON.stringify({response: `We got your GET request`, result}))
-        })
-        
     } else {
         res.writeHead(200, {'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*'})
         res.write("<p>home page</p>")
@@ -119,3 +84,6 @@ http.createServer((req, res) => {
 }).listen(port)
 
 console.log("Server is running and listening on port: " + port)
+
+// for sending data
+// res.end(JSON.stringify({response: `We got your GET request`, result}))
